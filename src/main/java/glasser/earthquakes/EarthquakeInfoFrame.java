@@ -7,12 +7,8 @@ import java.awt.event.ActionListener;
 
 public class EarthquakeInfoFrame {
     Feature current = new Feature();
-    boolean tIsColored = false;
     boolean QIsColored = false;
-
-    JPanel frame3;
     String[] titles = {"Magnitude", "Place", "Time", "Tsunami", "Coordinates"};
-
     JButton[] displays = {new JButton(), new JButton(), new JButton(), new JButton(), new JButton()};
     JButton[] quakeButtons;
 
@@ -20,8 +16,8 @@ public class EarthquakeInfoFrame {
 
     public EarthquakeInfoFrame(FeatureCollection featureCollection) {
         quakeButtons = new JButton[featureCollection.features.length];
-        JFrame mainFrame = new JFrame("Wordle");
-        mainFrame.setLayout(new GridLayout(3, 1));
+        JFrame mainFrame = new JFrame("Earthquake Data");
+        mainFrame.setLayout(new GridLayout(4, 1));
 
         JPanel frame1 = new JPanel();
         frame1.setLayout(new GridLayout(1, featureCollection.features.length));
@@ -53,7 +49,7 @@ public class EarthquakeInfoFrame {
         }
         JPanel frame2 = new JPanel();
         frame2.setLayout(new GridLayout(1, titles.length));
-        frame3 = new JPanel();
+        JPanel frame3 = new JPanel();
         frame3.setLayout(new GridLayout(1, titles.length));
 
         for (int i = 0; i < titles.length; i++) {
@@ -65,11 +61,8 @@ public class EarthquakeInfoFrame {
             tButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     mainFrame.requestFocus();
-
-                    tIsColored = true;
                     curTitle = tButton.getText();
                     checkChosen();
-
                 }
             });
 
@@ -81,19 +74,58 @@ public class EarthquakeInfoFrame {
             }
 
         }
-        frame1.setSize(500, 100);
-        frame2.setSize(500, 100);
-        frame3.setSize(500, 600);
+        JPanel all = new JPanel();
+        JButton getAll = new JButton("Get All Information");
+        getAll.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                displays[0].setText(String.valueOf(current.properties.mag));
+                displays[1].setText(String.valueOf(current.properties.place));
+                displays[2].setText(String.valueOf(current.properties.time));
+                displays[3].setText(String.valueOf(current.properties.tsunami));
+                displays[4].setText("Lat: " + String.valueOf(current.geometry.coordinates[0])
+                        + "\n Long: " + (String.valueOf(current.geometry.coordinates[1])));
+            }
+        });
+        JButton clear = new JButton("Clear All");
+        clear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                current=null;
+                for (int j = 0; j < quakeButtons.length; j++) {
+                    quakeButtons[j].setBackground(Color.GRAY);
+                    quakeButtons[j].setOpaque(true);
+                }
+                for (int j = 0; j < titles.length; j++) {
+                    displays[j].setText("");
+                }
+            }
+        });
+        getAll.setSize(1000,60);
+        getAll.setBackground(Color.GRAY);
+        getAll.setOpaque(true);
+        clear.setSize(600,600);
+        clear.setBackground(Color.GRAY);
+        clear.setOpaque(true);
+
+
+        all.add(getAll);
+        all.add(clear);
+        frame1.setSize(400, 100);
+        frame2.setSize(400, 100);
+        frame3.setSize(400, 600);
         frame3.setVisible(true);
         frame2.setVisible(true);
         frame1.setVisible(true);
+        all.setSize(400,500);
+        all.setVisible(true);
+
 
         mainFrame.add(frame1);
+        mainFrame.add(all);
         mainFrame.add(frame2);
         mainFrame.add(frame3);
-        mainFrame.setSize(1300, 500);
+        mainFrame.setSize(1400, 500);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
 
 
